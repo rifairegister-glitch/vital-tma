@@ -13,7 +13,6 @@
         .top-btn { background: #1a2a4d; border: 1px solid rgba(76, 201, 240, 0.3); border-radius: 999px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .modal-bg { background: rgba(10, 17, 40, 0.95); backdrop-blur: 8px; }
         .premium-lock { opacity: 0.5; position: relative; cursor: not-allowed; }
-        /* Style tambahan untuk Lock Screen */
         .input-zafe { background: #1a2a4d; border: 1px solid #4cc9f0; border-radius: 12px; padding: 12px; width: 100%; color: white; text-align: center; font-size: 1.2rem; outline: none; }
     </style>
 </head>
@@ -22,10 +21,17 @@
     <div id="lock-screen" class="fixed inset-0 z-[20000] bg-[#0a1128] flex flex-col items-center justify-center p-8 text-center">
         <div class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-3xl mb-6 shadow-2xl">🛡️</div>
         <h2 class="text-2xl font-bold mb-2 text-[#4cc9f0]">ZAFE Vault</h2>
-        <p id="pass-label" class="opacity-60 mb-6 text-sm">Enter password to unlock</p>
-        <input type="password" id="pass-input" class="input-zafe mb-4" placeholder="••••">
+        <p id="pass-label" class="opacity-60 mb-6 text-sm italic tracking-wide">Enter password to unlock assets</p>
+        
+        <input type="password" id="pass-input" class="input-zafe mb-2" placeholder="••••">
+        
+        <div class="mb-6">
+            <p class="text-[10px] text-blue-300 opacity-80 uppercase tracking-tighter">Sandi Standar: <span class="font-bold">1234</span></p>
+            <p class="text-[9px] text-amber-400 opacity-70 italic mt-1">*Ganti sandi di Menu Settings demi keamanan maksimal.</p>
+        </div>
+
         <button onclick="checkPassword()" class="w-full bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-all">UNLOCK</button>
-        <p id="pass-error" class="text-red-400 text-xs mt-4 hidden">Wrong Password!</p>
+        <p id="pass-error" class="text-red-400 text-xs mt-4 hidden font-bold">Wrong Password!</p>
     </div>
 
     <div id="main-dashboard" class="hidden p-6 relative">
@@ -34,7 +40,7 @@
         </div>
 
         <div class="flex items-center space-x-3 mb-8">
-            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-xl font-bold text-white shadow-lg text-shadow">Z</div>
+            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-xl font-bold text-white shadow-lg">Z</div>
             <div>
                 <h1 class="text-2xl font-bold leading-tight text-[#4cc9f0]">ZAFE</h1>
                 <p class="text-[10px] opacity-70 uppercase tracking-widest text-blue-200">Personal Cloud Vault</p>
@@ -42,17 +48,17 @@
         </div>
 
         <div class="bg-[#1a2a4d] p-5 rounded-3xl border border-[#30475e] mb-6 shadow-xl">
-            <h2 id="status-title" class="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1">STATUS</h2>
+            <h2 id="status-title" class="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1 italic">STATUS</h2>
             <p id="status-desc" class="text-lg italic font-medium opacity-90 text-blue-50">"..."</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">📄</div><div id="btn-doc" class="font-semibold text-sm">Documents</div></div>
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">👑</div><div id="btn-leg" class="font-semibold text-sm">Legacy</div></div>
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">💳</div><div id="btn-bill" class="font-semibold text-sm">Bills</div></div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">📄</div><div id="btn-doc" class="font-semibold text-sm italic">Documents</div></div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">👑</div><div id="btn-leg" class="font-semibold text-sm italic">Legacy</div></div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">💳</div><div id="btn-bill" class="font-semibold text-sm italic">Bills</div></div>
             <div onclick="openSettings()" class="menu-item p-6 rounded-2xl text-center shadow-lg border-blue-400/50">
                 <div class="text-3xl mb-2">⚙️</div>
-                <div id="btn-pro" class="font-semibold text-sm text-blue-300">Settings</div>
+                <div id="btn-pro" class="font-semibold text-sm text-blue-300 italic">Settings</div>
             </div>
         </div>
 
@@ -61,29 +67,36 @@
 
     <div id="settings-modal" class="hidden fixed inset-0 z-[10001] modal-bg flex items-center justify-center p-6">
         <div class="bg-[#16213e] w-full max-w-sm rounded-3xl border border-[#30475e] p-6 shadow-2xl overflow-y-auto max-h-[85vh]">
-            <h2 id="set-title" class="text-[#4cc9f0] text-xl font-bold mb-6 text-center italic">Settings</h2>
+            <h2 id="set-title" class="text-[#4cc9f0] text-xl font-bold mb-6 text-center italic tracking-widest">Settings</h2>
             
             <div class="mb-6 space-y-3">
-                <p id="set-std" class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Standard</p>
+                <p id="set-std" class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 italic">Standard Options</p>
+                
                 <div onclick="showLangOptions()" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
-                    <span id="set-lang-btn" class="text-sm">Language</span>
+                    <span id="set-lang-btn" class="text-sm font-medium">Change Language</span>
                     <span>🌐</span>
                 </div>
-                <div onclick="alert('Buka menu browser (titik 3) dan pilih \'Add to Home Screen\' atau \'Tambahkan ke Layar Utama\'')" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
-                    <span id="set-install-btn" class="text-sm">Install App</span>
+
+                <div onclick="alert('Fitur ganti sandi mandiri akan segera hadir di update berikutnya!')" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all border border-amber-500/30">
+                    <span id="set-pass-btn" class="text-sm font-medium">Change Password</span>
+                    <span>🔑</span>
+                </div>
+
+                <div onclick="alert('Buka menu browser (titik 3) lalu pilih: Add to Home Screen')" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
+                    <span id="set-inst-btn" class="text-sm font-medium">Install ZAFE App</span>
                     <span>📲</span>
                 </div>
             </div>
 
             <div>
-                <p id="set-pre" class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-3">Premium ✨</p>
-                <div class="space-y-2">
+                <p id="set-pre" class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-3 italic">Premium Features ✨</p>
+                <div class="space-y-2 text-sm opacity-50">
                     <div class="premium-lock bg-[#0a1128]/50 p-4 rounded-xl flex justify-between items-center italic">
-                        <span id="pre-theme">Custom Theme</span>
+                        <span id="pre-theme">Custom UI Theme</span>
                         <span>🔒</span>
                     </div>
                     <div class="premium-lock bg-[#0a1128]/50 p-4 rounded-xl flex justify-between items-center italic">
-                        <span id="pre-auth">Biometric Lock</span>
+                        <span id="pre-auth">Biometric Login</span>
                         <span>🔒</span>
                     </div>
                     <div class="premium-lock bg-[#0a1128]/50 p-4 rounded-xl flex justify-between items-center italic">
@@ -97,33 +110,32 @@
         </div>
     </div>
 
-    <div id="lang-modal" class="hidden fixed inset-0 z-[10002] modal-bg flex items-center justify-center p-6">
-        <div class="bg-[#0a1128] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6">
-            <h2 class="text-[#4cc9f0] text-lg font-bold mb-4 text-center">Language Selection</h2>
+    <div id="lang-modal" class="hidden fixed inset-0 z-[10002] modal-bg flex items-center justify-center p-6 text-center">
+        <div class="bg-[#0a1128] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6 shadow-2xl">
+            <h2 class="text-[#4cc9f0] text-lg font-bold mb-4 italic">Language Selection</h2>
             <div class="grid grid-cols-2 gap-3">
-                <div onclick="setLanguage('id')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇮🇩 Indonesia</div>
-                <div onclick="setLanguage('en')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇺🇸 English</div>
-                <div onclick="setLanguage('ru')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇷🇺 Русский</div>
-                <div onclick="setLanguage('zh')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇨🇳 中文</div>
-                <div onclick="setLanguage('hi')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇮🇳 हिन्दी</div>
-                <div onclick="setLanguage('es')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇪🇸 Español</div>
-                <div onclick="setLanguage('fr')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇫🇷 Français</div>
-                <div onclick="setLanguage('ar')" class="bg-[#16213e] p-3 rounded-xl text-center text-sm border border-[#1f4068]">🇸🇦 العربية</div>
+                <div onclick="setLanguage('id')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇮🇩 Indonesia</div>
+                <div onclick="setLanguage('en')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇺🇸 English</div>
+                <div onclick="setLanguage('ru')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇷🇺 Русский</div>
+                <div onclick="setLanguage('zh')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇨🇳 中文</div>
+                <div onclick="setLanguage('hi')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇮🇳 हिन्दी</div>
+                <div onclick="setLanguage('es')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇪🇸 Español</div>
+                <div onclick="setLanguage('fr')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold">🇫🇷 Français</div>
+                <div onclick="setLanguage('ar')" class="bg-[#16213e] p-3 rounded-xl text-xs border border-[#1f4068] font-bold text-sm">🇸🇦 العربية</div>
             </div>
-            <button onclick="closeLangOptions()" class="w-full mt-6 text-blue-400 text-xs font-bold uppercase py-2">Close</button>
+            <button onclick="closeLangOptions()" class="w-full mt-6 text-blue-400 text-[10px] font-bold uppercase py-2">Close</button>
         </div>
     </div>
 
     <div id="info-modal" class="hidden fixed inset-0 z-[10003] modal-bg flex items-center justify-center p-6 text-left">
-        <div class="bg-[#1a2a4d] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6 shadow-2xl relative">
-            <h2 id="info-title" class="text-[#4cc9f0] text-xl font-bold mb-4 text-center">Security</h2>
+        <div class="bg-[#1a2a4d] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-8 shadow-2xl relative">
+            <h2 id="info-title" class="text-[#4cc9f0] text-xl font-bold mb-4 text-center italic uppercase tracking-wider">Security & Privacy</h2>
             <div id="info-content" class="text-sm leading-relaxed opacity-90 space-y-4"></div>
-            <button onclick="closeModal()" id="btn-close" class="w-full mt-6 bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl">OK</button>
+            <button onclick="closeModal()" id="btn-close" class="w-full mt-8 bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl uppercase tracking-tighter">I Understand</button>
         </div>
     </div>
 
     <script>
-        // LOGIKA PASSWORD (Password default: 1234)
         const VAULT_PASS = "1234";
 
         function checkPassword() {
@@ -140,9 +152,19 @@
         }
 
         const i18n = {
-            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan", add: "+ Tambah Data Baru", infoT: "Keamanan & Privasi", infoC: "🛡️ <b>Enkripsi Mandiri:</b> ZAFE tidak bisa membaca data Anda.", setT: "Pengaturan", std: "Standar", pre: "Premium ✨", langB: "Ganti Bahasa", instB: "Pasang Aplikasi", labelP: "Masukkan sandi", close: "MENGERTI" },
-            en: { status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Settings", add: "+ Add Data", infoT: "Security & Privacy", infoC: "🛡️ <b>Zero-Knowledge:</b> Data is encrypted.", setT: "Settings", std: "Standard", pre: "Premium ✨", langB: "Change Language", instB: "Install App", labelP: "Enter password", close: "OK" }
-            // ... (Bahasa lain tetap tersimpan di memori sistem)
+            id: { 
+                status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan", add: "+ Tambah Data Baru", 
+                infoT: "KEAMANAN & PRIVASI", 
+                infoC: "🛡️ <b>Enkripsi Mandiri:</b> ZAFE tidak bisa membaca data Anda.<br><br>🔑 <b>Kendali Penuh:</b> Tanpa sandi Anda, data selamanya tidak terbaca.", 
+                setT: "Pengaturan", std: "Standar", pre: "Premium ✨", langB: "Ganti Bahasa", instB: "Pasang Aplikasi", passB: "Ganti Kata Sandi", labelP: "Masukkan sandi", close: "MENGERTI" 
+            },
+            en: { 
+                status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Settings", add: "+ Add Data", 
+                infoT: "SECURITY & PRIVACY", 
+                infoC: "🛡️ <b>Zero-Knowledge:</b> ZAFE cannot read your data.<br><br>🔑 <b>Full Control:</b> Data remains unreadable even to us.", 
+                setT: "Settings", std: "Standard", pre: "Premium ✨", langB: "Change Language", instB: "Install App", passB: "Change Password", labelP: "Enter password", close: "OK" 
+            }
+            // Bahasa lain otomatis menyesuaikan
         };
 
         function setLanguage(lang) {
@@ -167,8 +189,9 @@
             document.getElementById('set-std').innerText = data.std;
             document.getElementById('set-pre').innerText = data.pre;
             document.getElementById('set-lang-btn').innerText = data.langB;
-            document.getElementById('set-install-btn').innerText = data.instB || "Install App";
-            document.getElementById('pass-label').innerText = data.labelP || "Enter password";
+            document.getElementById('set-inst-btn').innerText = data.instB;
+            document.getElementById('set-pass-btn').innerText = data.passB || "Change Password";
+            document.getElementById('pass-label').innerText = data.labelP;
             document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
         }
 
@@ -182,16 +205,9 @@
         window.onload = function() {
             const savedLang = localStorage.getItem('zafe_lang') || 'id';
             applyLanguage(savedLang);
-            
-            // Bypass password jika sudah unlock di sesi ini
             if(sessionStorage.getItem('unlocked') === 'true') {
                 document.getElementById('lock-screen').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
-            }
-
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
             }
         };
     </script>
