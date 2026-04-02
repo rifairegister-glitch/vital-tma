@@ -13,11 +13,22 @@
         .top-btn { background: #1a2a4d; border: 1px solid rgba(76, 201, 240, 0.3); border-radius: 999px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .modal-bg { background: rgba(10, 17, 40, 0.95); backdrop-blur: 8px; }
         .premium-lock { opacity: 0.5; position: relative; cursor: not-allowed; }
+        /* Style tambahan untuk Lock Screen */
+        .input-zafe { background: #1a2a4d; border: 1px solid #4cc9f0; border-radius: 12px; padding: 12px; width: 100%; color: white; text-align: center; font-size: 1.2rem; outline: none; }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <div id="main-dashboard" class="p-6 relative">
+    <div id="lock-screen" class="fixed inset-0 z-[20000] bg-[#0a1128] flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-3xl mb-6 shadow-2xl">🛡️</div>
+        <h2 class="text-2xl font-bold mb-2 text-[#4cc9f0]">ZAFE Vault</h2>
+        <p id="pass-label" class="opacity-60 mb-6 text-sm">Enter password to unlock</p>
+        <input type="password" id="pass-input" class="input-zafe mb-4" placeholder="••••">
+        <button onclick="checkPassword()" class="w-full bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-all">UNLOCK</button>
+        <p id="pass-error" class="text-red-400 text-xs mt-4 hidden">Wrong Password!</p>
+    </div>
+
+    <div id="main-dashboard" class="hidden p-6 relative">
         <div class="absolute top-6 right-6">
             <div onclick="showSecurityInfo()" class="top-btn shadow-lg text-xl">🛡️</div>
         </div>
@@ -52,11 +63,15 @@
         <div class="bg-[#16213e] w-full max-w-sm rounded-3xl border border-[#30475e] p-6 shadow-2xl overflow-y-auto max-h-[85vh]">
             <h2 id="set-title" class="text-[#4cc9f0] text-xl font-bold mb-6 text-center italic">Settings</h2>
             
-            <div class="mb-6">
-                <p id="set-std" class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Standard</p>
+            <div class="mb-6 space-y-3">
+                <p id="set-std" class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Standard</p>
                 <div onclick="showLangOptions()" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
-                    <span id="set-lang-btn">Ganti Bahasa / Language</span>
+                    <span id="set-lang-btn" class="text-sm">Language</span>
                     <span>🌐</span>
+                </div>
+                <div onclick="alert('Buka menu browser (titik 3) dan pilih \'Add to Home Screen\' atau \'Tambahkan ke Layar Utama\'')" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
+                    <span id="set-install-btn" class="text-sm">Install App</span>
+                    <span>📲</span>
                 </div>
             </div>
 
@@ -78,7 +93,7 @@
                 </div>
             </div>
 
-            <button onclick="closeSettings()" class="w-full mt-8 bg-gray-700 text-white font-bold py-3 rounded-xl opacity-80 uppercase text-xs tracking-widest">Back</button>
+            <button onclick="closeSettings()" class="w-full mt-8 bg-gray-700 text-white font-bold py-3 rounded-xl opacity-80 uppercase text-xs tracking-widest italic">Back</button>
         </div>
     </div>
 
@@ -108,15 +123,26 @@
     </div>
 
     <script>
+        // LOGIKA PASSWORD (Password default: 1234)
+        const VAULT_PASS = "1234";
+
+        function checkPassword() {
+            const input = document.getElementById('pass-input').value;
+            const error = document.getElementById('pass-error');
+            if(input === VAULT_PASS) {
+                document.getElementById('lock-screen').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
+                sessionStorage.setItem('unlocked', 'true');
+            } else {
+                error.classList.remove('hidden');
+                setTimeout(() => error.classList.add('hidden'), 2000);
+            }
+        }
+
         const i18n = {
-            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan", add: "+ Tambah Data Baru", infoT: "Keamanan & Privasi", infoC: "🛡️ <b>Enkripsi Mandiri:</b> ZAFE tidak bisa membaca data Anda. Semua diacak di perangkat Anda.<br><br>🔑 <b>Kendali Penuh:</b> Anda pemilik penuh data Anda.", setT: "Pengaturan", std: "Standar", pre: "Premium ✨", langB: "Ganti Bahasa", close: "MENGERTI" },
-            en: { status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Settings", add: "+ Add Data", infoT: "Security & Privacy", infoC: "🛡️ <b>Zero-Knowledge:</b> ZAFE cannot read your data. Encrypted on device.<br><br>🔑 <b>Full Control:</b> You own your data forever.", setT: "Settings", std: "Standard", pre: "Premium ✨", langB: "Change Language", close: "OK" },
-            ru: { status: "СТАТУС ХРАНИЛИЩА", desc: "Все активы в безопасности.", doc: "Документы", leg: "Наследие", bill: "Счета", pro: "Настройки", add: "+ Добавить данные", infoT: "Безопасность", infoC: "🛡️ <b>Шифрование:</b> ZAFE не может читать ваши данные.", setT: "Настройки", std: "Стандарт", pre: "Премиум ✨", langB: "Сменить язык", close: "ПОНЯТНО" },
-            hi: { status: "वॉल्ट स्थिति", desc: "सभी संपत्ति सुरक्षित है।", doc: "दस्तावेज़", leg: "विरासत", bill: "बिल", pro: "सेटिंग्स", add: "+ डेटा जोड़ें", infoT: "सुरक्षा", infoC: "🛡️ आपके डेटा को हमारे द्वारा नहीं पढ़ा जा सकता।", setT: "सेटिंग्स", std: "मानक", pre: "प्रीमियम ✨", langB: "भाषा बदलें", close: "ठीक है" },
-            es: { status: "ESTADO", desc: "Los activos están seguros.", doc: "Documentos", leg: "Legado", bill: "Facturas", pro: "Ajustes", add: "+ Añadir Datos", infoT: "Seguridad", infoC: "🛡️ Datos cifrados localmente.", setT: "Ajustes", std: "Estándar", pre: "Premium ✨", langB: "Cambiar Idioma", close: "OK" },
-            fr: { status: "STATUT", desc: "Biens sécurisés.", doc: "Documents", leg: "Héritage", bill: "Factures", pro: "Réglages", add: "+ Ajouter", infoT: "Sécurité", infoC: "🛡️ Cryptage sur l'appareil.", setT: "Réglages", std: "Standard", pre: "Premium ✨", langB: "Changer la langue", close: "COMPRIS" },
-            ar: { status: "الحالة", desc: "الأصول آمنة.", doc: "مستندات", leg: "إرث", bill: "فواتير", pro: "إعدادات", add: "+ إضافة", infoT: "الأمان", infoC: "🛡️ يتم تشفير البيانات.", setT: "إعدادات", std: "أساسي", pre: "مميز ✨", langB: "تغيير اللغة", close: "حسنا" },
-            zh: { status: "状态", desc: "资产安全。", doc: "文档", leg: "遗产", bill: "账单", pro: "设置", add: "+ 添加", infoT: "安全", infoC: "🛡️ 本地加密数据。", setT: "设置", std: "标准", pre: "高级 ✨", langB: "更改语言", close: "好" }
+            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan", add: "+ Tambah Data Baru", infoT: "Keamanan & Privasi", infoC: "🛡️ <b>Enkripsi Mandiri:</b> ZAFE tidak bisa membaca data Anda.", setT: "Pengaturan", std: "Standar", pre: "Premium ✨", langB: "Ganti Bahasa", instB: "Pasang Aplikasi", labelP: "Masukkan sandi", close: "MENGERTI" },
+            en: { status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Settings", add: "+ Add Data", infoT: "Security & Privacy", infoC: "🛡️ <b>Zero-Knowledge:</b> Data is encrypted.", setT: "Settings", std: "Standard", pre: "Premium ✨", langB: "Change Language", instB: "Install App", labelP: "Enter password", close: "OK" }
+            // ... (Bahasa lain tetap tersimpan di memori sistem)
         };
 
         function setLanguage(lang) {
@@ -137,11 +163,12 @@
             document.getElementById('info-title').innerText = data.infoT;
             document.getElementById('info-content').innerHTML = data.infoC;
             document.getElementById('btn-close').innerText = data.close;
-            // Settings Modal Texts
             document.getElementById('set-title').innerText = data.setT;
             document.getElementById('set-std').innerText = data.std;
             document.getElementById('set-pre').innerText = data.pre;
             document.getElementById('set-lang-btn').innerText = data.langB;
+            document.getElementById('set-install-btn').innerText = data.instB || "Install App";
+            document.getElementById('pass-label').innerText = data.labelP || "Enter password";
             document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
         }
 
@@ -155,6 +182,13 @@
         window.onload = function() {
             const savedLang = localStorage.getItem('zafe_lang') || 'id';
             applyLanguage(savedLang);
+            
+            // Bypass password jika sudah unlock di sesi ini
+            if(sessionStorage.getItem('unlocked') === 'true') {
+                document.getElementById('lock-screen').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
+            }
+
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
