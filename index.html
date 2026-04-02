@@ -10,7 +10,11 @@
         body { background-color: #0a1128; color: white; transition: all 0.3s ease; }
         .lang-card { cursor: pointer; background: #1a2a4d; border: 1px solid #30475e; transition: 0.3s; }
         .lang-card:active { transform: scale(0.95); background: #4cc9f0; color: #0a1128; }
-        .menu-item { background: #16213e; border: 1px solid #1f4068; }
+        .menu-item { background: #16213e; border: 1px solid #1f4068; cursor: pointer; }
+        .menu-item:active { transform: scale(0.98); background: #1f4068; }
+        /* Custom Scrollbar for Info */
+        .modal-content::-webkit-scrollbar { width: 4px; }
+        .modal-content::-webkit-scrollbar-thumb { background: #4cc9f0; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -26,7 +30,7 @@
                 <span class="text-3xl">🇮🇩</span><p class="mt-2 text-sm">Indonesia</p>
             </div>
             <div onclick="setLanguage('ar')" class="lang-card p-4 rounded-2xl text-center">
-                <span class="text-3xl">🇸🇦</span><p class="mt-2 text-sm text-right">العربية</p>
+                <span class="text-3xl">🇸🇦</span><p class="mt-2 text-sm">العربية</p>
             </div>
             <div onclick="setLanguage('zh')" class="lang-card p-4 rounded-2xl text-center">
                 <span class="text-3xl">🇨🇳</span><p class="mt-2 text-sm">中文</p>
@@ -45,7 +49,7 @@
             <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-xl font-bold text-white shadow-lg">Z</div>
             <div>
                 <h1 class="text-2xl font-bold leading-tight text-[#4cc9f0]">ZAFE</h1>
-                <p class="text-xs opacity-70">Personal Cloud Vault</p>
+                <p class="text-xs opacity-70 uppercase tracking-tighter">Personal Cloud Vault</p>
             </div>
         </div>
 
@@ -57,19 +61,19 @@
         <div class="grid grid-cols-2 gap-4">
             <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
                 <div class="text-3xl mb-2">📄</div>
-                <div id="btn-doc" class="font-semibold">Documents</div>
+                <div id="btn-doc" class="font-semibold text-sm">Documents</div>
             </div>
             <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
                 <div class="text-3xl mb-2">👑</div>
-                <div id="btn-leg" class="font-semibold">Legacy</div>
+                <div id="btn-leg" class="font-semibold text-sm">Legacy</div>
             </div>
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
-                <div class="text-3xl mb-2">💳</div>
-                <div id="btn-bill" class="font-semibold">Bills</div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg" onclick="showSecurityInfo()">
+                <div class="text-3xl mb-2">🛡️</div>
+                <div id="btn-sec" class="font-semibold text-sm">Security</div>
             </div>
             <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
                 <div class="text-3xl mb-2">⚙️</div>
-                <div id="btn-pro" class="font-semibold">Pro</div>
+                <div id="btn-pro" class="font-semibold text-sm">Pro Settings</div>
             </div>
         </div>
 
@@ -78,14 +82,62 @@
         </button>
     </div>
 
+    <div id="info-modal" class="hidden fixed inset-0 z-[10000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-[#1a2a4d] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6 shadow-2xl relative">
+            <h2 id="info-title" class="text-[#4cc9f0] text-xl font-bold mb-4">Security Privacy</h2>
+            <div class="modal-content overflow-y-auto max-h-[60vh] text-sm leading-relaxed opacity-90 space-y-4">
+                <p id="info-p1"></p>
+                <p id="info-p2"></p>
+                <p id="info-p3"></p>
+            </div>
+            <button onclick="closeModal()" class="w-full mt-6 bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl active:scale-95">OK</button>
+        </div>
+    </div>
+
     <script>
         const i18n = {
-            en: { status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Pro Settings", add: "+ Add New Data" },
-            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan Pro", add: "+ Tambah Data Baru" },
-            ar: { status: "حالة الخزنة", desc: "جميع الأصول العائلية آمنة.", doc: "المستندات", leg: "إرث عائلي", bill: "الفواتير", pro: "إعدادات برو", add: "+ إضافة بيانات" },
-            zh: { status: "保险库状态", desc: "所有家庭资产均已安全存储。", doc: "文档", leg: "遗产", bill: "账单", pro: "专业设置", add: "+ 添加新数据" },
-            es: { status: "ESTADO DE BÓVEDA", desc: "Activos familiares seguros.", doc: "Documentos", leg: "Legado", bill: "Facturas", pro: "Ajustes Pro", add: "+ Agregar Datos" },
-            ja: { status: "金庫の状態", desc: "家族の資産は安全に保管されています。", doc: "書類", leg: "遺産", bill: "請求書", pro: "プロ設定", add: "+ データを追加" }
+            en: { 
+                status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", sec: "Security", pro: "Pro Settings", add: "+ Add New Data",
+                infoT: "Security & Privacy",
+                p1: "🛡️ **Zero-Knowledge Encryption:** ZAFE cannot read your data. All sensitive information is encrypted on your device before it reaches our cloud.",
+                p2: "🔑 **Full Control:** You own your data. You can export or delete your records permanently at any time.",
+                p3: "🌉 **Secure Bridge:** We only act as a secure vault for your family legacy. Your trust is our foundation."
+            },
+            id: { 
+                status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", sec: "Keamanan", pro: "Pengaturan Pro", add: "+ Tambah Data Baru",
+                infoT: "Keamanan & Privasi",
+                p1: "🛡️ **Enkripsi Mandiri:** ZAFE tidak bisa membaca data Anda. Semua informasi sensitif diacak (enkripsi) di perangkat Anda sebelum dikirim ke cloud kami.",
+                p2: "🔑 **Kendali Penuh:** Anda pemilik data Anda. Anda bisa mengambil (export) atau menghapus data Anda secara permanen kapan saja.",
+                p3: "🌉 **Brankas Aman:** Kami hanyalah jembatan aman untuk menyimpan aset dan warisan keluarga Anda."
+            },
+            ar: { 
+                status: "حالة الخزنة", desc: "جميع الأصول العائلية آمنة.", doc: "المستندات", leg: "إرث عائلي", sec: "الأمان", pro: "إعدادات برو", add: "+ إضافة بيانات",
+                infoT: "الأمان والخصوصية",
+                p1: "🛡️ **تشفير المعرفة الصفرية:** لا يمكن لـ ZAFE قراءة بياناتك. يتم تشفير جميع المعلومات الحساسة على جهازك قبل وصولها إلى سحابتنا.",
+                p2: "🔑 **التحكم الكامل:** أنت تملك بياناتك. يمكنك تصدير أو حذف سجلاتك نهائيًا في أي وقت.",
+                p3: "🌉 **جسر آمن:** نحن نعمل فقط كخزنة آمنة لإرث عائلتك."
+            },
+            zh: { 
+                status: "保险库状态", desc: "所有家庭资产均已安全存储。", doc: "文档", leg: "遗产", sec: "安全", pro: "专业设置", add: "+ 添加新数据",
+                infoT: "安全与隐私",
+                p1: "🛡️ **零知识加密:** ZAFE 无法读取您的数据。所有敏感信息在传输到我们的云端之前都会在您的设备上进行加密。",
+                p2: "🔑 **完全控制:** 您拥有自己的数据。您可以随时永久导出或删除您的记录。",
+                p3: "🌉 **安全桥梁:** 我们仅作为您家庭遗产的安全保险库。"
+            },
+            es: { 
+                status: "ESTADO DE BÓVEDA", desc: "Activos familiares seguros.", doc: "Documentos", leg: "Legado", sec: "Seguridad", pro: "Ajustes Pro", add: "+ Agregar Datos",
+                infoT: "Seguridad y Privacidad",
+                p1: "🛡️ **Cifrado de Conocimiento Cero:** ZAFE no puede leer sus datos. Toda la información sensible se cifra en su dispositivo antes de llegar a nuestra nube.",
+                p2: "🔑 **Control Total:** Usted es dueño de sus datos. Puede exportar o eliminar sus registros permanentemente en cualquier momento.",
+                p3: "🌉 **Puente Seguro:** Solo actuamos como una bóveda segura para su legado familiar."
+            },
+            ja: { 
+                status: "金庫の状態", desc: "家族の資産は安全に保管されています。", doc: "書類", leg: "遺産", sec: "セキュリティ", pro: "プロ設定", add: "+ データを追加",
+                infoT: "セキュリティとプライバシー",
+                p1: "🛡️ **ゼロ知識暗号化:** ZAFEはお客様のデータを読み取ることができません。すべての機密情報は、クラウドに到達する前にお客様のデバイス上で暗号化されます。",
+                p2: "🔑 **完全な制御:** お客様がデータを所有します。いつでも記録を永久にエクスポートまたは削除できます。",
+                p3: "🌉 **安全な架け橋:** 私たちはあなたの家族の遺産のための安全な保管庫としてのみ機能します。"
+            }
         };
 
         function setLanguage(lang) {
@@ -101,11 +153,25 @@
             document.getElementById('status-desc').innerText = `"${data.desc}"`;
             document.getElementById('btn-doc').innerText = data.doc;
             document.getElementById('btn-leg').innerText = data.leg;
-            document.getElementById('btn-bill').innerText = data.bill;
+            document.getElementById('btn-sec').innerText = data.sec;
             document.getElementById('btn-pro').innerText = data.pro;
             document.getElementById('btn-add').innerText = data.add;
             
+            // Apply to Modal
+            document.getElementById('info-title').innerText = data.infoT;
+            document.getElementById('info-p1').innerText = data.p1.replace(/\*\*/g, '');
+            document.getElementById('info-p2').innerText = data.p2.replace(/\*\*/g, '');
+            document.getElementById('info-p3').innerText = data.p3.replace(/\*\*/g, '');
+            
             document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
+
+        function showSecurityInfo() {
+            document.getElementById('info-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('info-modal').classList.add('hidden');
         }
 
         window.onload = function() {
