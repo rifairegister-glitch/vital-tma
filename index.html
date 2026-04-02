@@ -8,30 +8,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #0a1128; color: white; transition: all 0.3s ease; font-family: sans-serif; overflow-x: hidden; }
-        .lang-card { cursor: pointer; background: #1a2a4d; border: 1px solid #30475e; transition: 0.3s; }
-        .lang-card:active { transform: scale(0.95); background: #4cc9f0; color: #0a1128; }
+        .lang-card { cursor: pointer; background: #16213e; border: 1px solid #1f4068; transition: 0.3s; }
+        .lang-card:active { background: #4cc9f0; color: #0a1128; transform: scale(0.95); }
         .menu-item { background: #16213e; border: 1px solid #1f4068; cursor: pointer; transition: 0.2s; }
         .menu-item:active { transform: scale(0.98); background: #1f4068; }
+        .top-btn { background: #1a2a4d; border: 1px solid rgba(76, 201, 240, 0.3); border-radius: 999px; width: 40px; height: 40px; display: flex; items-center: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .top-btn:active { transform: scale(0.9); background: #4cc9f0; }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <div id="language-screen" class="fixed inset-0 z-[9999] bg-[#0a1128] flex flex-col items-center justify-center p-6 text-center">
-        <h1 class="text-4xl font-bold text-[#4cc9f0] mb-2">ZAFE</h1>
-        <p class="opacity-70 mb-8">Select Language / اختر اللغة</p>
-        <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
-            <div onclick="setLanguage('en')" class="lang-card p-4 rounded-2xl text-center">🇺🇸 English</div>
-            <div onclick="setLanguage('id')" class="lang-card p-4 rounded-2xl text-center">🇮🇩 Indonesia</div>
-            <div onclick="setLanguage('ar')" class="lang-card p-4 rounded-2xl text-center text-right">🇸🇦 العربية</div>
-            <div onclick="setLanguage('zh')" class="lang-card p-4 rounded-2xl text-center">🇨🇳 中文</div>
-            <div onclick="setLanguage('es')" class="lang-card p-4 rounded-2xl text-center">🇪🇸 Español</div>
-            <div onclick="setLanguage('ja')" class="lang-card p-4 rounded-2xl text-center">🇯🇵 日本語</div>
-        </div>
-    </div>
-
-    <div id="main-dashboard" class="hidden p-6 relative">
-        <div onclick="showSecurityInfo()" class="absolute top-6 right-6 w-10 h-10 bg-[#1a2a4d] border border-[#4cc9f0]/30 rounded-full flex items-center justify-center cursor-pointer active:scale-90 shadow-lg">
-            <span class="text-xl">🛡️</span>
+    <div id="main-dashboard" class="p-6 relative">
+        <div class="absolute top-6 right-6 flex space-x-2">
+            <div onclick="openLangMenu()" class="top-btn shadow-lg">
+                <span class="text-xl">🌐</span>
+            </div>
+            <div onclick="showSecurityInfo()" class="top-btn shadow-lg">
+                <span class="text-xl">🛡️</span>
+            </div>
         </div>
 
         <div class="flex items-center space-x-3 mb-8">
@@ -48,22 +42,10 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
-                <div class="text-3xl mb-2">📄</div>
-                <div id="btn-doc" class="font-semibold text-sm">Documents</div>
-            </div>
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
-                <div class="text-3xl mb-2">👑</div>
-                <div id="btn-leg" class="font-semibold text-sm">Legacy</div>
-            </div>
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
-                <div class="text-3xl mb-2">💳</div>
-                <div id="btn-bill" class="font-semibold text-sm">Bills</div>
-            </div>
-            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
-                <div class="text-3xl mb-2">⚙️</div>
-                <div id="btn-pro" class="font-semibold text-sm">Pro Settings</div>
-            </div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">📄</div><div id="btn-doc" class="font-semibold text-sm">Documents</div></div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">👑</div><div id="btn-leg" class="font-semibold text-sm">Legacy</div></div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">💳</div><div id="btn-bill" class="font-semibold text-sm">Bills</div></div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg"><div class="text-3xl mb-2">⚙️</div><div id="btn-pro" class="font-semibold text-sm">Pro Settings</div></div>
         </div>
 
         <button id="btn-add" class="w-full bg-[#4cc9f0] text-[#0a1128] font-bold py-4 rounded-2xl mt-8 shadow-lg active:scale-95 transition-all text-lg font-bold">
@@ -71,31 +53,42 @@
         </button>
     </div>
 
-    <div id="info-modal" class="hidden fixed inset-0 z-[10000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 text-center">
-        <div class="bg-[#1a2a4d] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6 shadow-2xl relative text-left">
-            <h2 id="info-title" class="text-[#4cc9f0] text-xl font-bold mb-4 font-sans text-center">Security</h2>
-            <div id="info-content" class="text-sm leading-relaxed opacity-90 space-y-4">
-                </div>
-            <button onclick="closeModal()" id="btn-close" class="w-full mt-6 bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl active:scale-95">OK</button>
+    <div id="lang-modal" class="hidden fixed inset-0 z-[10001] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-[#0a1128] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6 shadow-2xl">
+            <h2 class="text-[#4cc9f0] text-xl font-bold mb-4 text-center">Language / اللغة</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="setLanguage('en')" class="lang-card p-3 rounded-xl text-center text-sm">🇺🇸 English</div>
+                <div onclick="setLanguage('id')" class="lang-card p-3 rounded-xl text-center text-sm">🇮🇩 Indonesia</div>
+                <div onclick="setLanguage('ar')" class="lang-card p-3 rounded-xl text-center text-sm">🇸🇦 العربية</div>
+                <div onclick="setLanguage('zh')" class="lang-card p-3 rounded-xl text-center text-sm text-xs">🇨🇳 中文</div>
+            </div>
+            <button onclick="closeLangMenu()" class="w-full mt-6 text-white/50 text-xs font-bold py-2 uppercase tracking-widest">Close</button>
+        </div>
+    </div>
+
+    <div id="info-modal" class="hidden fixed inset-0 z-[10000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-[#1a2a4d] w-full max-w-sm rounded-3xl border border-[#4cc9f0] p-6 shadow-2xl">
+            <h2 id="info-title" class="text-[#4cc9f0] text-xl font-bold mb-4 text-center">Security</h2>
+            <div id="info-content" class="text-sm leading-relaxed opacity-90 space-y-4 text-left"></div>
+            <button onclick="closeModal()" id="btn-close" class="w-full mt-6 bg-[#4cc9f0] text-[#0a1128] font-bold py-3 rounded-xl">OK</button>
         </div>
     </div>
 
     <script>
         const i18n = {
             en: { status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Pro Settings", add: "+ Add Data", infoT: "Security & Privacy", infoC: "🛡️ <b>Zero-Knowledge:</b> ZAFE cannot read your data. It's encrypted on your device.<br><br>🔑 <b>Full Control:</b> You own your data forever.", close: "OK" },
-            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan Pro", add: "+ Tambah Data Baru", infoT: "Keamanan & Privasi", infoC: "🛡️ <b>Enkripsi Mandiri:</b> ZAFE tidak bisa membaca data Anda. Semua diacak di perangkat Anda sebelum dikirim.<br><br>🔑 <b>Kendali Penuh:</b> Anda pemilik penuh data Anda.", close: "SAYA MENGERTI" },
-            ar: { status: "حالة الخزنة", desc: "جميع الأصول العائلية آمنة.", doc: "المستندات", leg: "إرث عائلي", bill: "الفواتير", pro: "إعدادات برو", add: "+ إضافة بيانات", infoT: "الأمان والخصوصية", infoC: "🛡️ لا dapat لـ ZAFE قراءة بياناتك.<br><br>🔑 أنت تملك بياناتك بالكامل.", close: "حسنا" }
+            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan Pro", add: "+ Tambah Data Baru", infoT: "Keamanan & Privasi", infoC: "🛡️ <b>Enkripsi Mandiri:</b> ZAFE tidak bisa membaca data Anda. Semua diacak di perangkat Anda.<br><br>🔑 <b>Kendali Penuh:</b> Anda pemilik penuh data Anda.", close: "MENGERTI" },
+            ar: { status: "حالة الخزنة", desc: "جميع الأصول العائلية آمنة.", doc: "المستندات", leg: "إرث عائلي", bill: "الفواتير", pro: "إعدادات برو", add: "+ إضافة بيانات", infoT: "الأمان والخصوصية", infoC: "🛡️ لا dapat لـ ZAFE قراءة بياناتك.", close: "حسنا" }
         };
 
         function setLanguage(lang) {
             localStorage.setItem('zafe_lang', lang);
             applyLanguage(lang);
-            document.getElementById('language-screen').classList.add('hidden');
-            document.getElementById('main-dashboard').classList.remove('hidden');
+            closeLangMenu();
         }
 
         function applyLanguage(lang) {
-            const data = i18n[lang] || i18n['en'];
+            const data = i18n[lang] || i18n['id'];
             document.getElementById('status-title').innerText = data.status;
             document.getElementById('status-desc').innerText = `"${data.desc}"`;
             document.getElementById('btn-doc').innerText = data.doc;
@@ -103,31 +96,20 @@
             document.getElementById('btn-bill').innerText = data.bill;
             document.getElementById('btn-pro').innerText = data.pro;
             document.getElementById('btn-add').innerText = data.add;
-            
             document.getElementById('info-title').innerText = data.infoT;
             document.getElementById('info-content').innerHTML = data.infoC;
             document.getElementById('btn-close').innerText = data.close;
             document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
         }
 
+        function openLangMenu() { document.getElementById('lang-modal').classList.remove('hidden'); }
+        function closeLangMenu() { document.getElementById('lang-modal').classList.add('hidden'); }
         function showSecurityInfo() { document.getElementById('info-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('info-modal').classList.add('hidden'); }
 
         window.onload = function() {
-            // Cek apakah user sudah punya pilihan bahasa?
-            const savedLang = localStorage.getItem('zafe_lang');
-
-            if (savedLang) {
-                // Jika sudah ada, langsung dashboard
-                applyLanguage(savedLang);
-                document.getElementById('language-screen').classList.add('hidden');
-                document.getElementById('main-dashboard').classList.remove('hidden');
-            } else {
-                // Jika belum ada (Start Pertama), tunjukkan layar bendera
-                document.getElementById('language-screen').classList.remove('hidden');
-                document.getElementById('main-dashboard').classList.add('hidden');
-            }
-
+            const savedLang = localStorage.getItem('zafe_lang') || 'id';
+            applyLanguage(savedLang);
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
