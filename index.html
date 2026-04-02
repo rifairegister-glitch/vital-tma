@@ -82,7 +82,7 @@
                     <span>🔑</span>
                 </div>
 
-                <div onclick="alert('Buka menu browser (titik 3) lalu pilih: Add to Home Screen')" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
+                <div onclick="executeInstall()" class="bg-[#1f4068] p-4 rounded-xl flex justify-between items-center cursor-pointer active:bg-blue-900 transition-all">
                     <span id="set-inst-btn" class="text-sm font-medium">Install ZAFE App</span>
                     <span>📲</span>
                 </div>
@@ -138,6 +138,27 @@
     <script>
         const VAULT_PASS = "1234";
 
+        // LOGIKA INSTALASI PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function executeInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User installed ZAFE');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('ZAFE sudah terpasang atau browser Anda perlu instruksi manual: Klik menu browser (titik 3) > Tambahkan ke Layar Utama.');
+            }
+        }
+
         function checkPassword() {
             const input = document.getElementById('pass-input').value;
             const error = document.getElementById('pass-error');
@@ -164,7 +185,6 @@
                 infoC: "🛡️ <b>Zero-Knowledge:</b> ZAFE cannot read your data.<br><br>🔑 <b>Full Control:</b> Data remains unreadable even to us.", 
                 setT: "Settings", std: "Standard", pre: "Premium ✨", langB: "Change Language", instB: "Install App", passB: "Change Password", labelP: "Enter password", close: "OK" 
             }
-            // Bahasa lain otomatis menyesuaikan
         };
 
         function setLanguage(lang) {
@@ -208,6 +228,10 @@
             if(sessionStorage.getItem('unlocked') === 'true') {
                 document.getElementById('lock-screen').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
+            }
+            // Register Dummy Service Worker for PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
             }
         };
     </script>
