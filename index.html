@@ -1,91 +1,125 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VITAL - Family Vault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZAFE - Personal Cloud</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { 
-            background-color: var(--tg-theme-bg-color, #ffffff); 
-            color: var(--tg-theme-text-color, #222); 
-            transition: all 0.3s ease;
-        }
-        .card { 
-            background-color: var(--tg-theme-secondary-bg-color, #f3f4f6); 
-            border-radius: 16px;
-        }
-        .btn-primary { 
-            background-color: var(--tg-theme-button-color, #2481cc); 
-            color: var(--tg-theme-button-text-color, #ffffff); 
-        }
+        body { background-color: #0a1128; color: white; transition: all 0.3s ease; }
+        .lang-card { cursor: pointer; background: #1a2a4d; border: 1px solid #30475e; transition: 0.3s; }
+        .lang-card:active { transform: scale(0.95); background: #4cc9f0; color: #0a1128; }
+        .menu-item { background: #16213e; border: 1px solid #1f4068; }
     </style>
 </head>
-<body class="p-5 font-sans min-h-screen">
-    <div class="flex items-center space-x-3 mb-8">
-        <div id="user-photo" class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold overflow-hidden">
-            V
+<body class="min-h-screen">
+
+    <div id="language-screen" class="fixed inset-0 z-[9999] bg-[#0a1128] flex flex-col items-center justify-center p-6 text-center">
+        <h1 class="text-4xl font-bold text-[#4cc9f0] mb-2">ZAFE</h1>
+        <p class="opacity-70 mb-8">Select Language / اختر اللغة</p>
+        <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+            <div onclick="setLanguage('en')" class="lang-card p-4 rounded-2xl text-center">
+                <span class="text-3xl">🇺🇸</span><p class="mt-2 text-sm">English</p>
+            </div>
+            <div onclick="setLanguage('id')" class="lang-card p-4 rounded-2xl text-center">
+                <span class="text-3xl">🇮🇩</span><p class="mt-2 text-sm">Indonesia</p>
+            </div>
+            <div onclick="setLanguage('ar')" class="lang-card p-4 rounded-2xl text-center">
+                <span class="text-3xl">🇸🇦</span><p class="mt-2 text-sm text-right">العربية</p>
+            </div>
+            <div onclick="setLanguage('zh')" class="lang-card p-4 rounded-2xl text-center">
+                <span class="text-3xl">🇨🇳</span><p class="mt-2 text-sm">中文</p>
+            </div>
+            <div onclick="setLanguage('es')" class="lang-card p-4 rounded-2xl text-center">
+                <span class="text-3xl">🇪🇸</span><p class="mt-2 text-sm">Español</p>
+            </div>
+            <div onclick="setLanguage('ja')" class="lang-card p-4 rounded-2xl text-center">
+                <span class="text-3xl">🇯🇵</span><p class="mt-2 text-sm">日本語</p>
+            </div>
         </div>
-        <div>
-            <h1 class="text-xl font-bold leading-tight">VITAL Vault</h1>
-            <p class="text-xs opacity-70">Halo, <span id="user-name">User</span>!</p>
+    </div>
+
+    <div id="main-dashboard" class="hidden p-6">
+        <div class="flex items-center space-x-3 mb-8">
+            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-xl font-bold text-white shadow-lg">Z</div>
+            <div>
+                <h1 class="text-2xl font-bold leading-tight text-[#4cc9f0]">ZAFE</h1>
+                <p class="text-xs opacity-70">Personal Cloud Vault</p>
+            </div>
         </div>
-    </div>
 
-    <div class="card p-4 mb-6 shadow-sm">
-        <h2 class="font-bold text-sm mb-1 text-blue-500 uppercase tracking-wider">Status Brankas</h2>
-        <p class="text-lg font-medium italic">"Semua aset keluarga aman tersimpan."</p>
-    </div>
+        <div class="bg-[#1a2a4d] p-5 rounded-3xl border border-[#30475e] mb-6 shadow-xl">
+            <h2 id="status-title" class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">VAULT STATUS</h2>
+            <p id="status-desc" class="text-lg italic font-medium opacity-90">"All family assets are secure."</p>
+        </div>
 
-    <div class="grid grid-cols-2 gap-4">
-        <button class="card p-5 flex flex-col items-center hover:scale-95 transition-transform">
-            <span class="text-3xl mb-2">🛡️</span>
-            <span class="text-sm font-bold">Dokumen</span>
-        </button>
-        <button class="card p-5 flex flex-col items-center hover:scale-95 transition-transform">
-            <span class="text-3xl mb-2">📜</span>
-            <span class="text-sm font-bold">Legacy</span>
-        </button>
-        <button class="card p-5 flex flex-col items-center hover:scale-95 transition-transform">
-            <span class="text-3xl mb-2">📅</span>
-            <span class="text-sm font-bold">Tagihan</span>
-        </button>
-        <button class="card p-5 flex flex-col items-center hover:scale-95 transition-transform">
-            <span class="text-3xl mb-2">💎</span>
-            <span class="text-sm font-bold text-amber-600">Pro</span>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
+                <div class="text-3xl mb-2">📄</div>
+                <div id="btn-doc" class="font-semibold">Documents</div>
+            </div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
+                <div class="text-3xl mb-2">👑</div>
+                <div id="btn-leg" class="font-semibold">Legacy</div>
+            </div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
+                <div class="text-3xl mb-2">💳</div>
+                <div id="btn-bill" class="font-semibold">Bills</div>
+            </div>
+            <div class="menu-item p-6 rounded-2xl text-center shadow-lg">
+                <div class="text-3xl mb-2">⚙️</div>
+                <div id="btn-pro" class="font-semibold">Pro</div>
+            </div>
+        </div>
+
+        <button id="btn-add" class="w-full bg-[#4cc9f0] text-[#0a1128] font-bold py-4 rounded-2xl mt-8 shadow-lg active:scale-95 transition-all">
+            + Add Data
         </button>
     </div>
-
-    <button id="add-btn" class="btn-primary w-full py-4 rounded-2xl mt-8 font-bold text-lg shadow-lg active:opacity-80">
-        + Tambah Data Baru
-    </button>
 
     <script>
-        // 1. Inisialisasi Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Layar penuh
-        tg.ready();  // Memberitahu Telegram aplikasi siap
+        const i18n = {
+            en: { status: "VAULT STATUS", desc: "All family assets are secure.", doc: "Documents", leg: "Legacy", bill: "Bills", pro: "Pro Settings", add: "+ Add New Data" },
+            id: { status: "STATUS BRANKAS", desc: "Aset keluarga aman tersimpan.", doc: "Dokumen", leg: "Warisan", bill: "Tagihan", pro: "Pengaturan Pro", add: "+ Tambah Data Baru" },
+            ar: { status: "حالة الخزنة", desc: "جميع الأصول العائلية آمنة.", doc: "المستندات", leg: "إرث عائلي", bill: "الفواتير", pro: "إعدادات برو", add: "+ إضافة بيانات" },
+            zh: { status: "保险库状态", desc: "所有家庭资产均已安全存储。", doc: "文档", leg: "遗产", bill: "账单", pro: "专业设置", add: "+ 添加新数据" },
+            es: { status: "ESTADO DE BÓVEDA", desc: "Activos familiares seguros.", doc: "Documentos", leg: "Legado", bill: "Facturas", pro: "Ajustes Pro", add: "+ Agregar Datos" },
+            ja: { status: "金庫の状態", desc: "家族の資産は安全に保管されています。", doc: "書類", leg: "遺産", bill: "請求書", pro: "プロ設定", add: "+ データを追加" }
+        };
 
-        // 2. Ambil data user asli dari Telegram
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            document.getElementById('user-name').innerText = user.first_name || "Rifai";
-            if (user.photo_url) {
-                document.getElementById('user-photo').innerHTML = `<img src="${user.photo_url}" class="w-full h-full object-cover">`;
-            }
+        function setLanguage(lang) {
+            localStorage.setItem('zafe_lang', lang);
+            applyLanguage(lang);
+            document.getElementById('language-screen').classList.add('hidden');
+            document.getElementById('main-dashboard').classList.remove('hidden');
         }
 
-        // 3. Efek Haptic (Getaran) saat klik tombol (Khas Telegram)
-        document.getElementById('add-btn').addEventListener('click', () => {
-            tg.HapticFeedback.impactOccurred('medium');
-            tg.showAlert("Fitur tambah data akan segera hadir di Step 2!");
-        });
+        function applyLanguage(lang) {
+            const data = i18n[lang];
+            document.getElementById('status-title').innerText = data.status;
+            document.getElementById('status-desc').innerText = `"${data.desc}"`;
+            document.getElementById('btn-doc').innerText = data.doc;
+            document.getElementById('btn-leg').innerText = data.leg;
+            document.getElementById('btn-bill').innerText = data.bill;
+            document.getElementById('btn-pro').innerText = data.pro;
+            document.getElementById('btn-add').innerText = data.add;
+            
+            document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
 
-        // 4. Tombol Utama Telegram (Bawah)
-        tg.MainButton.setText("KELUAR");
-        tg.MainButton.show();
-        tg.MainButton.onClick(() => tg.close());
+        window.onload = function() {
+            const savedLang = localStorage.getItem('zafe_lang');
+            if (savedLang) {
+                applyLanguage(savedLang);
+                document.getElementById('language-screen').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
+            }
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        };
     </script>
 </body>
 </html>
